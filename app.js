@@ -31,7 +31,7 @@ app.post('/users/save', (req, res)=>{
             console.log(err.message)
             res.status(500).json({ message : '제출 실패' })
         } else {
-            res.status(200).json({ message : '제출 성공'  })
+            res.status(200).json({ message : '제출 성공' })
         }
     })
 })

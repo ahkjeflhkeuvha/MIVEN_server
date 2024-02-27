@@ -1,28 +1,17 @@
 const express = require('express')
-const mysql = require('mysql')
+const cors = require('cors');
+const app = express();
+const port = 3000;
 
-const app = express()
+app.use(express.json());
+app.use(cors());
 
-app.use(express.json())
+const user = require('./routes/users');
+app.use('/users', user);
 
-const pool = mysql.createPool({
-    host : 'localhost',
-    user : 'root',  
-    password : '591006',
-    database : 'users'
-})
+const admin = require('./routes/admins');
+app.use('/admins', admin);
 
-app.post('/users/inform', (req, res)=>{
-	let {name, student_no, phone_no, email} = req.body
-	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email) VALUES (?,?,?,?)', [name, student_no, phone_no, email], (err, result) => {
-        if(err){
-            console.error(err.message)
-            res.status(500).json({ message : '유저 정보 입력 실패' })
-        } else {
-            res.status(200).json({ message : '유저 정보 입력 성공' })
-        }
-    })
-})
 
 app.post('/users/save', (req, res)=>{
     let {q_1, q_2, q_3} = req.body
@@ -48,6 +37,6 @@ app.patch('/users/presave', (req, res)=>{
     })
 })
 
-app.listen('3000', (req, res)=>{
-    console.log('connected!!!')
-})
+app.listen(port, () => {
+    console.log(`Example app listeing on port ${port}`)
+});

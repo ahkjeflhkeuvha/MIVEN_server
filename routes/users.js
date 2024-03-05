@@ -1,9 +1,12 @@
 const pool = require('../db/db');
 const router = require('express').Router();
+const crypto = require('crypto');
+const hashedPassword = require('../middlewares/hashedPasswords');
 
-router.post('/inform', (req, res)=>{
+router.post('/', hashedPassword, (req, res) => {
 	let {name, student_no, phone_no, email} = req.body
-	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email) VALUES (?,?,?,?)', [name, student_no, phone_no, email], (err, result) => {
+    const password = req.password;
+	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email, password, is_submit) VALUES (?,?,?,?,?,?)', [name, student_no, phone_no, email, password, 0], (err, result) => {
         if(err){
             console.error(err.message)
             res.status(500).json({ message : '유저 정보 입력 실패' })

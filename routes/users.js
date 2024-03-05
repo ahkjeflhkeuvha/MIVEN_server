@@ -3,6 +3,7 @@ const router = require('express').Router();
 const crypto = require('crypto');
 const hashedPassword = require('../middlewares/hashedPasswords');
 
+//회원가입
 router.post('/', hashedPassword, (req, res) => {
 	let {name, student_no, phone_no, email} = req.body
     const password = req.password;
@@ -16,6 +17,7 @@ router.post('/', hashedPassword, (req, res) => {
     })
 })
 
+//지원서 저장
 router.post('/save', (req, res)=>{
     let {q_1, q_2, q_3} = req.body
     pool.query('INSERT INTO apply_info (q_1, q_2, q_3) VALUES (?,?,?)', [q_1, q_2, q_3], (err, result)=>{
@@ -28,7 +30,7 @@ router.post('/save', (req, res)=>{
     })
 })
 
-
+//지원서 임시저장
 router.patch('/presave', (req, res)=>{
     let {q_1, q_2, q_3} = req.body
     pool.query('UPDATE apply_info SET q_1=?, q_2=?, q_3=?', [q_1, q_2, q_3], (err, result)=>{

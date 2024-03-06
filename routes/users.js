@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const hashedPassword = require('../middlewares/hashedPasswords');
 
 //회원가입
-router.post('/', hashedPassword, (req, res) => {
+router.post('/join', hashedPassword, (req, res) => {
 	let {name, student_no, phone_no, email} = req.body
     const password = req.password;
 	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email, password, is_submit) VALUES (?,?,?,?,?,?)', [name, student_no, phone_no, email, password, 0], (err, result) => {
@@ -13,6 +13,22 @@ router.post('/', hashedPassword, (req, res) => {
             res.status(500).json({ message : '유저 정보 입력 실패' })
         } else {
             res.status(200).json({ message : '유저 정보 입력 성공' })
+        }
+    })
+})
+
+// 로그인
+router.post('/login', (req, res) => {
+    const { email, password } = req.body
+    const derivedKey = crypto.pbkdf2Sync(password, process.env.SALT, 8931, 64, 'sha512');
+    let hashedPassword = derivedKey.toString('hex');
+
+    pool.query('SELECT * FROM apply_info WHERE password = ? AND email = ?', [hashedPassword, email], (err, result) => {
+        if(err) {
+            console.error(err.message)
+            res.status(500).json({ message : '로그인 실패' })
+        } else {
+            res.status(200).json({ message : '로그인 성공' })
         }
     })
 })

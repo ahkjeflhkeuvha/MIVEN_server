@@ -5,9 +5,9 @@ const hashedPassword = require('../middlewares/hashedPasswords');
 
 //회원가입
 router.post('/join', hashedPassword, (req, res) => {
-	let {name, student_no, phone_no, email} = req.body
+	let {name, student_no, phone_no, email, is_dormitory} = req.body
     const password = req.password;
-	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email, password, is_submit) VALUES (?,?,?,?,?,?)', [name, student_no, phone_no, email, password, 0], (err, result) => {
+	pool.query('INSERT INTO apply_info (name, student_no, phone_no, email, is_dormitory, password, is_submit) VALUES (?,?,?,?,?,?)', [name, student_no, phone_no, email, is_dormitory, password, 0], (err, result) => {
         if(err){
             console.error(err.message)
             res.status(500).json({ message : '유저 정보 입력 실패' })
